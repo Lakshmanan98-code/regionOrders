@@ -37,16 +37,16 @@ output application/json
 read(payload,"application/json")]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<ee:transform doc:name="Transform Message1" doc:id="d208314e-d543-4d53-9a71-091d0b837860">
+		<ee:transform doc:name="mappingRecords" doc:id="d208314e-d543-4d53-9a71-091d0b837860">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 
-var A = payload filter ((item,index) -> item.Region == vars.region) 
+var  B = payload filter ((item,index) -> item.Region == vars.region) 
 
 ---
 
-(vars.region) : A map 
+(vars.region) : B map 
 	{
 			"Country": $."Country",
 			"OrderID": $."Order ID",
