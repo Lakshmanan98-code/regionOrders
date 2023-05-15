@@ -1,0 +1,34 @@
+[
+  {
+    "Region": "Oceania",
+    "Country": "Tuvalu",
+    "Item Type": "Baby Food",
+    "Sales Channel": "Offline",
+    "Order Priority": "H",
+    "Order Date": "11 May 2022",
+    "Order ID": "669165933",
+    "Ship Date": "15 May 2022",
+    "Units Sold": "9925",
+    "Unit Price": "255.28",
+    "Unit Cost": "159.42",
+    "Total Revenue": "2533654",
+    "Total Cost": "1582243.5",
+    "Total Profit": "951410.5"
+  },
+  {
+    "Region": "America",
+    "Country": "Grenada",
+    "Item Type": "Cereal",
+    "Sales Channel": "Online",
+    "Order Priority": "C",
+    "Order Date": "12 February 2022",
+    "Order ID": "963881480",
+    "Ship Date": "14 February 2022",
+    "Units Sold": "2804",
+    "Unit Price": "205.7",
+    "Unit Cost": "117.11",
+    "Total Revenue": "576782.8",
+    "Total Cost": "328376.44",
+    "Total Profit": "248406.36"
+  }
+]

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="addcb6a2-6e13-4d48-92bf-ff0fdc57bc39" />
+	<file:config name="File_Config1" doc:name="File Config" doc:id="4ce51fe1-6540-493a-846f-eccad921229d" />
+	<sub-flow name="ordersSub_Flow1" doc:id="05fa8720-edff-4aa4-b7a1-df073cd14d5d" >
+		<file:read doc:id="b6783514-ab0a-4d96-a3e7-330eed61ffc2" config-ref="File_Config" path="${file.path}" doc:name="Read" />
+		<ee:transform doc:name="Transform Message" doc:id="434905dd-02ec-42ed-9279-a8fe8507069e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+
+---
+payload filter ($."Ship Date" == $."Order Date") map ((item, index) -> 
+{
+    "Country" : item."Country",
+    "OrderID" : item."Order ID",
+    "Order Date" : item."Order Date" ,
+    "ShipDate" : item."Ship Date",
+    "total_cost" : round(item."Total Cost")
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="recordsSub_Flow" doc:id="2cb90f14-4dad-4583-a72f-b06ef07bf24f" >
+		<set-variable value="#[attributes.queryParams.region]" doc:name="Set Variable" doc:id="31e28f1e-5027-4a5e-900d-8fc90c95dc74" variableName="region" />
+		<file:read doc:id="783d9407-cd93-4e6b-a66d-3dad33ab92b2" config-ref="File_Config1" path="#[attributes.queryParams.filepath]" doc:name="Read" />
+		<ee:transform doc:name="Transform Message" doc:id="27ad94ea-7df0-414b-a72c-947398f2f7bf">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+read(payload,"application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message1" doc:id="d208314e-d543-4d53-9a71-091d0b837860">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+
+var A = payload filter ((item,index) -> item.Region == vars.region) 
+
+---
+
+(vars.region) : A map 
+	{
+			"Country": $."Country",
+			"OrderID": $."Order ID",
+			"ShipDate": $."Ship Date" ,
+			"OrderDate": $."Order Date",
+			"total_cost": round($."Total Cost")
+	}
+	]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

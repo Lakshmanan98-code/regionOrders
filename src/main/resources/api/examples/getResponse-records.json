@@ -1,0 +1,18 @@
+[
+	{
+		"Oceania": [
+			{
+				"Country" : "Tuvalu",
+				"order_id":"669165933",
+				"ship_date":"27-Jun-2022",
+				"total_cost":"1582244"
+			},
+			{
+				"Country" : "Solomon Islands",
+				"order_id":"547995746",
+				"ship_date":"21-Feb-2022",
+				"total_cost":"474115"
+			}
+		]	
+	}
+]

@@ -1,0 +1,38 @@
+#%RAML 1.0
+title: Region-Orders
+  
+/records:
+  description: This is used to fetch all records
+  get:
+    queryParameters:
+      region:
+       type: string
+       required : true  
+      filepath: 
+       type: string
+       required: true       
+    responses:
+      200:
+       body:
+        application/json:
+         example: !include  /examples/getResponse-records.json
+
+/orders:
+  description: This is used to fetch country details
+  get:
+    queryParameters:
+      filepath:
+       type: string
+       required : true         
+    responses:
+      200:
+       body:
+        application/json:
+         example: !include /examples/getResponse-orders.json 
+
+      
+  
+
+        
+  
+  

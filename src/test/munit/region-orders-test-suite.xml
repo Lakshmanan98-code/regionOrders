@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="region-orders-test-suite.xml" />
+	<munit:test name="region-orders-test-suite-region-orders-mainTest" doc:id="95f73db8-0ee7-4e2f-89d3-58bda210e8fc" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="7b5a28d9-1b40-456a-9139-d84e22fdfc42" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="region-orders-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="regionOrders-Mainflow" doc:id="5b636167-f554-4212-810e-f4f086621588" name="region-orders-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="1006ed57-4586-40ee-9e0a-ba0ce6e174bd" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="region-orders-test-suite-region-orders-consoleTest" doc:id="3b08c494-5776-4263-9139-803f12a62000" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="54598d29-f04e-4748-b366-a4e40df779d1" processor="apikit:console">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="region-orders-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to region-orders-console" doc:id="a549a882-09e7-43b9-bbd6-b1467b830e76" name="region-orders-console"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="9a318271-fbfb-4de9-8973-a1312078fd21" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-flow-test-suite-ordersSub_Flow1Test" doc:id="c916d3b7-7d25-4b91-a46e-b3d1092c27e4" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="591121f3-de61-43f2-ae72-30457296f036" processor="file:read">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b6783514-ab0a-4d96-a3e7-330eed61ffc2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[readUrl("classpath://fileData.json", "application/json")]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="dddf1b07-7296-441b-a169-8434023569b8">
+				<munit:attributes value='#["queryParams": {&#10;		"filepath": "C:/POC/CountryOrderFile.csv"&#10;	}]' mediaType="application/csv" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to ordersSub_Flow" doc:id="45a09854-e2a8-44a7-a68a-c744d097816e" name="get:\orders:region-orders-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="584f2242-d1ff-4a3a-b459-4f4d6fb806a9" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-flow-test-suite-recordsSub_Flow" doc:id="6912998d-3a04-45ba-9db7-ddf3256215fb" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c5bff137-315e-4bf3-8133-0d29ced3c36e" processor="file:read">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="783d9407-cd93-4e6b-a66d-3dad33ab92b2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/json&#10;---&#10;readUrl ("classpath://fileData.json")]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="df69eff4-60b8-4425-a3d3-8632a21ed8ac">
+				<munit:attributes value='#["queryParams": {&#10;		"region": "Oceania",&#10;		"filepath": "C:/POC/CountryOrderFile.csv"&#10;	}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to ordersSub_Flow" doc:id="985afae4-da7f-4e73-be34-b1184f2db8a6" name="get:\records:region-orders-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="0509eb2a-1bd5-4448-a554-fc617b4f04ec" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
